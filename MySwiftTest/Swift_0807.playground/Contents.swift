@@ -6,6 +6,16 @@ var str = "Hello, playground"
 
 
 /// 变量常量,类型,控制流,函数与闭包  Mon, 7 Aug 2017
+/*
+ Tips:
+ 1.nil
+ 2.?和!
+ 3.显式转换
+ 4.隐式创建
+ 5.元组数组字典
+ 6.if-let ..< ...
+ 7.inout 函数创建函数 嵌套函数捕获引用 闭包格式
+ */
 
 //常量let必须有值,变量var可以不包含但是用的话必须有值
 var someVariable : Int = 0
@@ -16,7 +26,7 @@ var anOptionInteger : Int? = nil
 anOptionInteger = 42
 let test = 1
 if anOptionInteger != nil {
-//    print("It has a value. \(test) ")
+    //    print("It has a value. \(test) ")
     print("It has a value. \(anOptionInteger!) ")
     print("test", terminator:"")
     print("test")
@@ -87,7 +97,7 @@ loopSum
 
 var firstCounter = 0
 for index in 1 ..< 10 {
-//    firstCounter++  // ++ 在swift3中移除,只能用 += 1 了
+    //    firstCounter++  // ++ 在swift3中移除,只能用 += 1 了
     firstCounter += 1
 }
 firstCounter
@@ -157,7 +167,7 @@ func testFunction(_ t1 : Int, _ t2 : Int) -> (doubled : Int, quadrupled : Int) {
 }
 forthFunction(firstValue: 2, secondValue: 4).doubled
 forthFunction(firstValue: 2, secondValue: 4).1 //现在调用函数貌似必须加上参数名字,貌似以前可以不加,另外参数名字顺序也要一样.说是为了方便兼容oc?不过规范点也好
-testFunction(2, 4)  //这里之所以可以不加参数名字是因为用了 _ 当作外部参数名， 内部参数名是t1和t2，函数内部用t1和t2就可以，但是外部是_也就是都可以的话，就不需要加上参数名了
+testFunction(2, 4)  //这里之所以可以不加参数名字是因为用了 _ 当作外部参数名,内部参数名是t1和t2,函数内部用t1和t2就可以,但是外部是_也就是都可以的话,就不需要加上参数名了
 //forthFunction(2, 4)
 //forthFunction(secondValue:4 ,firstValue: 2)
 
@@ -167,7 +177,7 @@ func multiplyNumbers2 (firstNumber: Int, multiplier: Int = 2) -> Int {
 multiplyNumbers2(firstNumber: 2, multiplier: 4)
 multiplyNumbers2(firstNumber: 2)
 
-//参数个数可变的函数 类似于public int sumNumbers(List<int> list){}原理 使用可变参数时，可以有任意多个非可变参数，但是只有列表中的最后一个参数可以是可变参数
+//参数个数可变的函数 类似于public int sumNumbers(List<int> list){}原理 使用可变参数时,可以有任意多个非可变参数,但是只有列表中的最后一个参数可以是可变参数
 func sumNumbers(numbers: Int...) -> Int {
     var total = 0
     for item in numbers {
@@ -181,14 +191,14 @@ sumNumbers(numbers: 2,3,4,5)
 /*
  两种传递参数方式
  1.值类型
-    传递的是参数的一个副本，这样在调用参数的过程中不会影响原始数据。(除class外)
+ 传递的是参数的一个副本,这样在调用参数的过程中不会影响原始数据。(除class外)
  2.引用类型
-    把参数本身引用(内存地址)传递过去，在调用的过程会影响原始数据。(例如class)
+ 把参数本身引用(内存地址)传递过去,在调用的过程会影响原始数据。(例如class)
  
  注意事项
- 1.inout修饰的参数是不能有默认值的(例子中length = 10被赋予默认值)，有范围的参数集合也不能被修饰；
- 2.一个参数一旦被inout修饰，就不能再被var和let修饰了。
-*/
+ 1.inout修饰的参数是不能有默认值的(例子中length = 10被赋予默认值),有范围的参数集合也不能被修饰；
+ 2.一个参数一旦被inout修饰,就不能再被var和let修饰了。
+ */
 var value = 50
 func testInout (first: inout Int, length: Int = 10){
     first += length
@@ -196,7 +206,7 @@ func testInout (first: inout Int, length: Int = 10){
 testInout(first: &value)
 value //value就变成了60了,因为相当于是改变了指针指向的内存地址
 
-//将函数用作变量 只要一个函数的参数与返回值类型都与声明中的函数相同，就可以将它存储在这个变量中
+//将函数用作变量 只要一个函数的参数与返回值类型都与声明中的函数相同,就可以将它存储在这个变量中
 func addNumbers (firstNumber num1 : Int, toSecondNumber num2 : Int) -> Int {
     return num1 + num2
 }
@@ -205,7 +215,7 @@ func addNumbers (firstNumber num1 : Int, toSecondNumber num2 : Int) -> Int {
 var numbersFunc = addNumbers
 numbersFunc(2, 3)
 
-//函数还可以接受其他函数作为参数，意味着函数可以合并
+//函数还可以接受其他函数作为参数,意味着函数可以合并
 func timesThree (number: Int) -> Int {
     return number * 3
 }
@@ -235,10 +245,10 @@ func createTest() -> (Int) -> Int {
 }
 
 var addTwo = createAdder(numberToAdd: 4)
-addTwo(2)   //上述例子是创建了一个createAdder(numberToAdd: 4)的新函数,这个函数等同于上面写的createTest()跟单独拿出来的有+4的adder其实效果一样的，将之存储在变量addTwo中，调用的话就是addTwo(2)，看下面这一句等同效果的可以方便理解
+addTwo(2)   //上述例子是创建了一个createAdder(numberToAdd: 4)的新函数,这个函数等同于上面写的createTest()跟单独拿出来的有+4的adder其实效果一样的,将之存储在变量addTwo中,调用的话就是addTwo(2),看下面这一句等同效果的可以方便理解
 createAdder(numberToAdd: 4)(2)
 
-//一个函数还可以“捕获”一个值，并多次使用它
+//一个函数还可以“捕获”一个值,并多次使用它
 func createIncrementor(incrementAmount: Int) -> (() -> Int) {
     var amount = 0
     func incrementor() -> Int {
@@ -250,28 +260,28 @@ func createIncrementor(incrementAmount: Int) -> (() -> Int) {
 }
 var incrementByTen = createIncrementor(incrementAmount: 10)
 print("First time:\(incrementByTen())")
-print("Second time:\(incrementByTen())") //其他的都跟上一个差不多，这里之所以是20不是10是因为上一句调用过后，amount这个新函数createIncrementor(incrementAmount: 10)内部的amount已经有值了也就是10，看print，在加之前amount已经是10了，下面是一个新函数15所以amount还是0
+print("Second time:\(incrementByTen())") //其他的都跟上一个差不多,这里之所以是20不是10是因为上一句调用过后,amount这个新函数createIncrementor(incrementAmount: 10)内部的amount已经有值了也就是10,看print,在加之前amount已经是10了,下面是一个新函数15所以amount还是0
 
 var incrementByFifteen = createIncrementor(incrementAmount: 15)
 incrementByFifteen()
 /*捕获总结：
-    1.嵌套函数可以捕获其外部函数所有的参数以及定义的常量和变量
-    2.incrementor()函数并没有任何参数，但是在函数体内访问了amount变量。这是因为这个函数从外围函数捕获了amount变量的引用(参考前面的引用类型)。所以调用一次就指针修改一次，所以值也变了.捕获引用保证了amount变量在调用完createIncrementor后不会消失，并且保证了下一次执行incrementor函数时，amount依旧存在。
-    3.因为归根结底还是c的高阶来的，所以这些指针类似物还是要注意
+ 1.嵌套函数可以捕获其外部函数所有的参数以及定义的常量和变量
+ 2.incrementor()函数并没有任何参数,但是在函数体内访问了amount变量。这是因为这个函数从外围函数捕获了amount变量的引用(参考前面的引用类型)。所以调用一次就指针修改一次,所以值也变了.捕获引用保证了amount变量在调用完createIncrementor后不会消失,并且保证了下一次执行incrementor函数时,amount依旧存在。
+ 3.因为归根结底还是c的高阶来的,所以这些指针类似物还是要注意
  */
 
-//闭包 小的匿名代码块，可以像函数一样使用，基本格式：
+//闭包 小的匿名代码块,可以像函数一样使用,基本格式：
 /*
  {
-    (形参) -> (返回值类型) in
-        //执行代码
+ (形参) -> (返回值类型) in
+ //执行代码
  }
  如果闭包没有参数,没有返回值.in和in之前的内容可以省略
  {
-    //执行代码
+ //执行代码
  }
  尾随闭包写法:
- 如果闭包是函数的最后一个参数,则可以将闭包写在()后面，如果函数只有一个参数,并且这个参数是闭包,那么()可以不写
+ 如果闭包是函数的最后一个参数,则可以将闭包写在()后面,如果函数只有一个参数,并且这个参数是闭包,那么()可以不写
  httpTool.loadRequest() {
  print("回到主线程", NSThread.currentThread());
  }
