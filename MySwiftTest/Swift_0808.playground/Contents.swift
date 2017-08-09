@@ -386,7 +386,31 @@ loadedObject?.name
 
 //Cocoa中的设计模式
 /*
- 1.MVC NSData、数组和字典都是M； NSKeyedArchiver就是一个C类,取得信息进行逻辑运算； NSButton和UITextField都是V类
- 2.委托模式 //之后再写
- 3.通知模式 //同上
+ 1.MVC 
+    NSData、数组和字典都是M； NSKeyedArchiver就是一个C类,取得信息进行逻辑运算； NSButton和UITextField都是V类,MVC太常用
+ 2.委托模式
+    允许将一个对象的部分功能转交给另一个对象，比如重写两个类的行为，就需要两个单独的子类。用委托的话，只要一个单独出一个用作委托的对象就可以
+ 其他不写了,还没看
  */
+
+//委托模式／代理模式
+protocol HouseSecurityDelegate {  //定义一个协议用来重写
+    func handlerIntruder()
+}
+class GuardDog : HouseSecurityDelegate {
+    func handlerIntruder() {
+        print("Releasing the hounds")
+    }
+}
+class House { //创建一个用于委托执行GuardDog的handlerIntruder函数的委托对象
+    var delegate : HouseSecurityDelegate?
+    func burglarDetected() {
+        delegate?.handlerIntruder()
+    }
+}
+let myHouse = House()
+myHouse.burglarDetected() //这时候是什么都没有的,因为还没有被委托
+
+let theHounds = GuardDog()
+myHouse.delegate = theHounds //theHounds检查了myHouse里是否实现了与要委托的事件handlerIntruder相适应的方法，然后将该方法委托给myHouse
+myHouse.burglarDetected() //Releasing the hounds
