@@ -99,3 +99,88 @@ var numberOfTouchesRequired: Int // finger count
 var numberOfTapsRequired: Int // single tap, double tap, etc.
 var numberOfTouchesRequired: Int // finger count
 ```
+
+## Multiple MVCs
+> iOS provides some Controllers whose View is "other MVCs" Examples: ```UITableBarController```, ```UISplitViewController```, ```UINavigationController```
+
+### UITabBarController
+![image](http://note.youdao.com/yws/public/resource/09541f586de48ab936ffc56a3f25e64e/xmlnote/6A5D415F13C7480CA08CA5251DE571CB/2472)
+
+### UISplitViewController
+![image](http://note.youdao.com/yws/public/resource/09541f586de48ab936ffc56a3f25e64e/xmlnote/8A89006045A84349BEEB4104D0ADBB30/2479)
+
+### UINavigationController
+![image](http://note.youdao.com/yws/public/resource/09541f586de48ab936ffc56a3f25e64e/xmlnote/4DC39997CBB84E7EB3DE4D38882347CB/2483)
+
+### Accessing the sub-MVCs
+> You can get the sub-MVCs via the viewControllers property 
+
+```Swift
+var viewControllers: [UIViewController]? { get set }
+// Can be optional (e.g. for tab bar)
+// for a tab bar, they are in order, left to right, in the array
+// for a split view, [0] is the master and [1] is the detail
+// for a navigation controller, [0] is the root and the rest are in order on the stack
+// even though this is settable, usually setting happens via storyboard, segues, or other
+// for example, navigation controller's push and pop methods
+```
+
+> Every UIViewController knows the Split View, Tab Bar or Navigation Controller it is currently in by calling these properties in UIViewController
+
+```Swift
+var tabBarController: UITabBarController? { get }
+var splitViewController: UISplitViewController? { get }
+var navigationController: UINavigationController? { get }
+
+// for example, to get the detail (right side) of the split view controller you are in
+if let detail: UIViewController? = splitViewController?.viewControllers[1] { ... }
+```
+
+## Segues
+> A segue is that one MVC can cause another MVC to appear
+
+### Kinds of segues (they will adapt to their environment)
+> - Show Segue (will push in a Navigation Controller, else Modal//动态)
+> - Show Detail Segue (will show in Detail of a Split View or will push in a Navigation Controller)
+> - Modal Segue (take over the entire screen while the MVC is up)
+> - Popover Segue (make the MVC appear in a little popover window)
+
+### Segues always create a new instance of an MVC
+
+### prepare(for segue: UIStoryboardSegue, sender: Any?)
+
+```Swift
+func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if let identifier = segue.identifier {
+        switch identifier {
+            case "Show Graph":
+                if let vc = segue.destinationViewController as? GraphController {
+                    vc.property1 = ...
+                    vc.callMethodToSetItUp(...)
+                }
+            default: break
+        }
+    }
+}
+```
+> The ***segue*** passed in contains important information about this segue:
+> 1. the identifier from the storyboard
+> 2. the Controller of the MVC you are segueing to (which was just created for you)
+
+> The ***sender*** is either the instigating object from a storyboard (e.g. a UIButton) or the sender you provided if you invoked the segue manually in code
+
+> Here is the ***identifier*** from the storyboard (it can be nil, so be sure to check for that case)
+> 
+> Your Controller might support preparing for lots of different segues from different instigators so this identifier is how you'll know which one you're preparing for
+
+> ***segue.destinationViewController as? GraphController***
+>
+> Here we are looking at the Controller of the MVC we're segueing to
+>
+> It is Any so we must cast it to the Controller we (should) know it to be
+
+> ***vc.property1 = ...*** and ***vc.callMethodToSetItUp(...)***
+>
+> It is crucial to understand that this preparation is happening BEFORE outlets get set!
+>
+> It is a very common bug to prepare an MVC thinking its outlets are set
