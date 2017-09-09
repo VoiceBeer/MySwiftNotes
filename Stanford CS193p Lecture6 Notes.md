@@ -156,4 +156,68 @@ func viewWillTransition(
     > ```didReceiveMemoryWarning```
 > 6. leave the heap
 
+## Memory Management
+### Automatic Reference Counting
+> Reference types (classed) are stored in the heap
+>
+> How does the system know when to reclaim the memory for these from the heap?
+>
+> It "counts references" to each of them and when there are zero references, they get tossed.
+>
+> This is done automatically
+>
+> It is known as "Automatic Reference Counting" and it is NOT garbage collection
 
+### Influencing ARC
+> You can influence ARC by how you declare a reference-type var with these keywords ...
+```strong```,```weak```,```unowned```
+
+#### strong
+> strong is "normal" reference counting, it's the default, don't even ever type this keyword
+>
+> As long as anyone, anywhere has a strong pointer to an instance, it will stay in the heap
+
+#### weak
+> weak means "if no one else is interested in this, then neither am I, set me to nil in that case" (I'm looking at this thing in the heap but if no one else is interested in the heap then you can throw it out of the heap and set me to nil)
+>
+> Because it has to be nil-able, weak only applies to Optional pointers to reference types
+>
+> A weak pointer will NEVER keep an object in the heap
+>
+> Great example: outlets (strongly held by the view hierarchy, so outlets can be weak)
+
+#### unowned
+> unowned means "don't reference count this; crash if I'm wrong"
+>
+> This is very rarely used
+>
+> Usually only to break memory cycles between objects (more on that in a moment), it can only used to make a memory cycle when you're 100% sure that you know who's using that pointer, because automatic reference counting is not going to be counting it as a strong reference, and it's also not going to check. And so if you use it, and that thing you're pointing to has left the heap, it will crash your program
+
+## Closures
+### Capturing
+> Closures are stored in the heap as well (i.e. they are ++reference types++)
+>
+> They can be put in Arrays, Dictionarys, etc. They are a first-class type in Swift
+>
+> What is more, they "capture" variables they use from the surrounding code into the heap too.
+>
+> Those captured variables need to stay in the heap as long as the closure stays in the heap
+>
+> This can create a memory cycle
+
+### An example
+> Hard to record in words, see lecture6 1:10:45 - 1:23:51, the slides and the demo
+
+#### essentials
+
+```Swift
+func addUnaryOperation(symbol: String, operation: (Double) -> Double)
+
+addUnaryOperation("@"){ [unowned self]/[weak self = self] in
+    self.display.textColor = UIColor.green / self?.display.textColor = UIColor.green
+    return sqrt($0)
+}
+
+// unowned case: if self(view controller) is out of the heap, this would crash, but it's fine, because if the viewcontroller is not even in the heap, this calculator operation won't be executed
+// weak case: self? would be nil and it will not execute the rest of that line
+```
