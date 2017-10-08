@@ -232,7 +232,7 @@ let firstSpace: String.Index = s.character.index(of: " ")
 > Base class for all OC classes, some advanced feature will require you to subclass from NSObject while using Swift
 ### NSNumber
 > Also from OC(because of NS), it can turn the Bool to Int: 0 is false, others are true except 0
-### Date
+
 ### Data
 > struct, value type
 
