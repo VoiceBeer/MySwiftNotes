@@ -246,7 +246,7 @@ let firstSpace: String.Index = s.character.index(of: " ")
 > - A designated(除了convenience就是designated) init must (and can only) call a designated init that is in its immediate superclass
 > - U must initialize all properties introduced by your class before calling a superclass's init //必须先初始化自身的属性后才能调用super.init
 > - U must call a superclass's init before you assign a value to an inherited property
-//只有调用了super.init后才能改变父类的属性
+>   //只有调用了super.init后才能改变父类的属性
 
 ### Convenience init
 > - A convenience init must (and can only) call an init in its own class
@@ -264,7 +264,7 @@ let firstSpace: String.Index = s.character.index(of: " ")
 
 ### Failable init
 > If an init is declared with a ? after the word init, it returns an Optional
-init?(arg1: Type1, ...) {//might return nil}
+> init?(arg1: Type1, ...) {//might return nil}
 
 ```Swift
 //e.g.
@@ -330,3 +330,4 @@ if !defaults.synchronize() {
 ```Swift
 assert( () -> Bool, "message")
 ```
+
